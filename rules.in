@@ -1,0 +1,315 @@
+<typeSpec>      ::=     int
+|   @ 0 type        =       @ 1 type
+$
+
+<relop>         ::=     > 
+|   @ 0 tmpStr      =       @ 1 tmpStr
+$
+
+<relop>         ::=     <
+|   @ 0 tmpStr      =       @ 1 tmpStr
+$
+
+<sumop>         ::=     +
+|   @ 0 tmpStr      =       @ 1 tmpStr
+$
+
+<sumop>         ::=     -
+|   @ 0 tmpStr      =       @ 1 tmpStr
+$
+
+<mulop>         ::=     *
+|   @ 0 tmpStr      =       @ 1 tmpStr
+$
+
+<assignop>      ::=     =
+|   @ 0 tmpStr      =       @ 1 tmpStr
+$
+
+<parms>         ::=     <parmList>
+|   @ 0 tmpStrList  =       @ 1 tmpStrList
+$
+
+<parmList>      ::=     <parmTypeList>
+|   @ 0 tmpStrList  push    @ 1 tmpStrList
+$
+
+<parmList>      ::=     <parmList> ; <parmTypeList>
+|   @ 0 tmpStrList  push    @ 1 tmpStrList
+|   @ 0 tmpStrList  push    @ 3 tmpStrList
+$
+
+<parmTypeList>  ::=     <typeSpec> <parmIdList>
+|   @ 0 type        =       @ 1 type
+|   @ 0 tmpStrList  =       @ 2 tmpStrList
+|   alloc_vars
+$
+
+<parmIdList>    ::=     <parmIdList> , <parmId>
+|   @ 0 tmpStrList  =       @ 1 tmpStrList
+|   @ 0 tmpStrList  push    @ 3 tmpStr
+$
+
+<parmIdList>    ::=     <parmId>
+|   @ 0 tmpStrList  push       @ 1 tmpStr
+$
+
+<parmId>        ::=     ID
+|   @ 0 tmpStr      =       @ 1 tmpStr
+$
+
+<varDeclId>     ::=     ID
+|   @ 0 tmpStr      =       @ 1 tmpStr
+$
+
+<varDeclInit>   ::=     <varDeclId>
+|   @ 0 tmpStr      =       @ 1 tmpStr
+$
+
+<varDeclList>   ::=     <varDeclList> , <varDeclInit>
+|   @ 0 tmpStrList  =       @ 1 tmpStrList
+|   @ 0 tmpStrList  push    @ 3 tmpStr
+$
+
+<varDeclList>   ::=     <varDeclInit>
+|   @ 0 tmpStrList  push    @ 1 tmpStr
+$
+
+<scopedVarDecl> ::=     <typeSpec> <varDeclList> ;
+|   @ 0 type        =       @ 1 type
+|   @ 0 tmpStrList  =       @ 2 tmpStrList
+|   alloc_vars
+$
+
+<funDecl>       ::=     <funHead> <compoundStmt>
+|   @ 0 tmpInt      =       get_nxtcid
+|   .   backpatch           @ 2 nextList    @ 0 tmpInt
+|   function_push
+$
+
+<funHead>       ::=     <typeSpec> ID ( <parms> )
+|   @ 0 type        =       @ 1 type
+|   @ 0 tmpStrList  =       @ 4 tmpStrList
+|   @ 0 tmpStr      =       @ 2 tmpStr
+|   function_pack
+$ 
+
+<exp>           ::=     <mutable> = <exp>
+|   update_type
+|   .   gen     @ 0 null    store           @ 3 addr    @ 1 addr
+$
+
+<sumExp>        ::=     <sumExp> <sumop> <mulExp>
+|   update_type
+|   @ 0 addr        =       new_temp
+|   .   gen     @ 0 addr    @ 2 tmpStr      @ 1 addr    @ 3 addr
+$
+
+<mulExp>        ::=     <mulExp> <mulop> <unaryExp>
+|   update_type
+|   @ 0 addr        =       new_temp
+|   .   gen     @ 0 addr    @ 2 tmpStr      @ 1 addr    @ 3 addr
+$
+
+<mutable>       ::=     ID
+|   @ 0 type        =       get_vartype @ 1 tmpStr
+|   @ 0 addr        =       get_var @ 1 tmpStr
+$
+
+<constant>      ::=     NUMCONST
+|   @ 0 type        =       @ 1 type
+|   @ 0 addr        =       @ 1 addr
+$
+
+
+
+<selectStmt>    ::=     if ( <simpleExp> ) <stmt>
+|   .   backpatch       @ 3 trueList        @ 5 entry
+|   @ 0 nextList    =       @ 3 falseList
+|   @ 0 nextList    push    @ 5 nextList
+$
+
+<selectStmt>    ::=     if ( <simpleExp> ) <stmt> <else> <stmt>
+|   .   backpatch       @ 3 trueList        @ 5 entry
+|   .   backpatch       @ 3 falseList       @ 7 entry
+|   @ 0 nextList    =       @ 5 nextList
+|   @ 0 nextList    push    @ 6 nextList
+|   @ 0 nextList    push    @ 7 nextList
+$
+
+<else>          ::=     else
+|   @ 0 tmpInt      =       get_nxtcid
+|   @ 0 nextList    push    @ 0 tmpInt
+|   .   gen     @ 0 null    goto        @ 0 null        @ 0 null
+$
+
+<iterStmt>      ::=     while ( <simpleExp> ) <stmt>
+|   .   backpatch       @ 5 nextList        @ 3 entry
+|   .   backpatch       @ 3 trueList        @ 5 entry
+|   @ 0 nextList    push    @ 3 falseList
+|   .   gen     @ 3 entry   goto        @ 3 entry       @ 3 entry
+$
+
+<compoundStmt>  ::=     { <localDecls> <stmtList> }
+|   @ 0 nextList    =       @ 3 nextList
+$
+
+<stmtList>      ::=     <stmtList> <stmt>
+|   .   backpatch       @ 1 nextList        @ 2 entry
+|   @ 0 nextList    =       @ 2 nextList
+$
+
+
+<exp>           ::=     <simpleExp>
+|   @ 0 trueList    =       @ 1 trueList
+|   @ 0 falseList   =       @ 1 falseList
+|   @ 0 type        =       @ 1 type
+|   @ 0 addr        =       @ 1 addr
+$ 
+
+<simpleExp>     ::=     <simpleExp> or <andExp>
+|   update_type
+|   .   backpatch       @ 1 falseList       @ 3 entry
+|   @ 0 trueList    =       @ 1 trueList
+|   @ 0 trueList    push    @ 3 trueList
+|   @ 0 falseList   =       @ 3 falseList
+$
+
+<simpleExp>     ::=     <andExp>
+|   @ 0 trueList    =       @ 1 trueList
+|   @ 0 falseList   =       @ 1 falseList
+|   @ 0 type        =       @ 1 type
+|   @ 0 addr        =       @ 1 addr
+$
+
+<andExp>        ::=     <andExp> and <unaryRelExp>
+|   update_type
+|   .   backpatch       @ 1 trueList        @ 3 entry
+|   @ 0 trueList    =       @ 3 trueList
+|   @ 0 falseList   =       @ 1 falseList
+|   @ 0 falseList   push    @ 3 falseList
+$
+
+<andExp>        ::=     <unaryRelExp>
+|   @ 0 type        =       @ 1 type
+|   @ 0 addr        =       @ 1 addr
+|   @ 0 trueList    =       @ 1 trueList
+|   @ 0 falseList   =       @ 1 falseList
+$
+
+<unaryRelExp>   ::=     not <unaryRelExp>
+|   update_type
+|   @ 0 trueList    =       @ 2 falseList
+|   @ 0 falseList   =       @ 2 trueList
+$
+
+<unaryRelExp>   ::=     <relExp>
+|   @ 0 trueList    =       @ 1 trueList
+|   @ 0 falseList   =       @ 1 falseList
+|   @ 0 type        =       @ 1 type
+|   @ 0 addr        =       @ 1 addr
+$
+
+<relExp>        ::=     <sumExp> <relop> <sumExp>
+|   update_type
+|   @ 0 addr        =       new_temp
+|   .   gen     @ 0 addr    @ 2 tmpStr      @ 1 addr    @ 3 addr
+|   @ 0 tmpInt      =       get_nxtcid
+|   .   gen     @ 0 addr    br      @ 0 null        @ 0 null
+|   @ 0 trueList    push    @ 0 tmpInt
+|   @ 0 tmpInt      =       get_nxtcid
+|   .   gen     @ 0 null    goto    @ 0 null        @ 0 null
+|   @ 0 falseList   push    @ 0 tmpInt
+$
+
+
+<returnStmt>    ::=     return <exp> ;
+|   .   gen     @ 0 null    ret     @ 2 addr        @ 0 null
+$
+
+
+<stmt>          ::=     <expStmt>
+|   @ 0 nextList    =       @ 1 nextList
+$
+
+<stmt>          ::=     <compoundStmt>
+|   @ 0 nextList    =       @ 1 nextList
+$
+
+<stmt>          ::=     <selectStmt>
+|   @ 0 nextList    =       @ 1 nextList
+$
+
+<stmt>          ::=     <iterStmt>
+|   @ 0 nextList    =       @ 1 nextList
+$
+
+
+
+<relExp>        ::=     <sumExp>
+|   @ 0 type        =       @ 1 type
+|   @ 0 addr        =       @ 1 addr
+$
+
+<sumExp>        ::=     <mulExp>
+|   @ 0 type        =       @ 1 type
+|   @ 0 addr        =       @ 1 addr
+$   
+
+<mulExp>        ::=     <unaryExp>
+|   @ 0 type        =       @ 1 type
+|   @ 0 addr        =       @ 1 addr
+$
+
+<unaryExp>      ::=     <factor>
+|   @ 0 type        =       @ 1 type
+|   @ 0 addr        =       @ 1 addr
+$
+
+<factor>        ::=     <mutable>
+|   @ 0 type        =       @ 1 type
+|   @ 0 addr        =       new_temp
+|   .   gen     @ 0 addr    load    @ 1 addr    @ 0 null
+$
+
+<factor>        ::=     <immutable>
+|   @ 0 type        =       @ 1 type
+|   @ 0 addr        =       @ 1 addr
+$
+
+<immutable>     ::=     <constant>
+|   @ 0 type        =       @ 1 type
+|   @ 0 addr        =       @ 1 addr
+$
+
+<immutable>     ::=     ( <exp> )
+|   @ 0 type        =       @ 2 type
+|   @ 0 addr        =       @ 2 addr
+$
+
+<immutable>     ::=     <call>
+|   @ 0 type        =       @ 1 type
+|   @ 0 addr        =       @ 1 addr
+$
+
+
+
+<call>          ::=     ID ( <args> )
+|   @ 0 addr        =       new_temp
+|   @ 0 tmpStr      =       @ 1 tmpStr
+|   @ 0 tmpIntList  =       @ 3 tmpIntList
+|   gen_call
+$
+
+<args>          ::=     <argList>
+|   @ 0 tmpIntList  =       @ 1 tmpIntList
+$
+
+<argList>       ::=     <argList> , <exp>
+|   @ 0 tmpIntList  =       @ 1 tmpIntList
+|   @ 0 tmpIntList  push    @ 3 addr
+$
+
+<argList>       ::=     <exp>
+|   @ 0 tmpIntList  push    @ 1 addr
+$

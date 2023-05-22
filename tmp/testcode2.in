@@ -1,0 +1,51 @@
+int test_arg(int a, b)
+{
+    a = b+1;
+    return a;
+}
+
+int test_call(int x)
+{
+    int ret;
+    ret = test_arg(3, x);
+    return ret;
+}
+
+int test_while()
+{
+    int a;
+    a = 10;
+    while (a > 0 and a < 10) {
+        a = a-1;
+    }
+
+    while (a > 1 or a < 9) {
+        int b;
+        b = a*b;
+        a = a + b;
+    }
+}
+
+int test_if(int x)
+{
+    int a, b, c;
+    a = x;
+    if (a < 0)
+        if (a > 1) {
+            c = 2;
+        }
+        else if (b > 2) {
+            int d;
+            c = d;
+        }
+        else a = 5;
+        
+    a = a+b*c;
+}
+
+int main()
+{
+    int a, b, x, c;
+    x = a-2*(a+b)+c;
+    return 0;
+}

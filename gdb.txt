@@ -1,0 +1,3 @@
+set args testcode4.in rules.in code.ll <grammar.in >log.txt
+
+b auto.cpp:336

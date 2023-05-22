@@ -1,0 +1,37 @@
+int fib(int x) {
+    int ret;
+    ret;
+
+    if (x < 3)
+        ret = 1;
+    else
+        ret = fib(x-2) + fib(x-1);
+    
+    return ret;
+}
+
+int sleep_one_second() {
+    int num_per_sec, i;
+    num_per_sec = 410000000;
+    i = 0;
+    while (i<num_per_sec) {
+        i = i+1;
+    }
+    return 0;
+}
+
+int main(int argc)
+{
+    int t_sec, cur_cnt;
+    int tmp;
+    
+    t_sec = fib(argc);
+
+    while (t_sec > 0) {
+        sleep_one_second();
+        t_sec = t_sec - 1;
+    }
+
+
+    return 0;
+}

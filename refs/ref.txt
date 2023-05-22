@@ -1,0 +1,11 @@
+https://norasandler.com/2017/11/29/Write-a-Compiler.html
+
+llvm ir
+https://llvm.org/
+https://blog.csdn.net/weixin_30580943/article/details/98706842
+
+
+http://www2.cs.uidaho.edu/~mdwilder/cs445/refs/c-grammar.pdf
+
+
+FIRST/FOLLOW    P140

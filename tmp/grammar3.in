@@ -1,0 +1,10 @@
+<_>             ::=     <funDecl>
+
+<typeSpec>      ::=     bool | char | int
+<funDecl>       ::=     <typeSpec> ID ( <parms> ) <compoundStmt>
+<parms>         ::=     <parmList> | EMPTY
+<parmList>      ::=     <parmList> ; <parmTypeList> | <parmTypeList>
+<parmTypeList>  ::=     <typeSpec> <parmIdList>
+<parmIdList>    ::=     <parmIdList> , <parmId> | <parmId>
+<parmId>        ::=     ID | ID [ ]
+<compoundStmt>  ::=     { }

@@ -1,0 +1,12 @@
+int test_while()
+{
+    int a;
+    a = 10;
+    while (a > 0) {
+        a = a-1;
+    }
+    while (a < 20) {
+        a = a+5;
+    }
+}
+

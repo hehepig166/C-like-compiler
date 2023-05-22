@@ -1,0 +1,70 @@
+, : [ ] ( ) { } ;
+bool char int
+true false
+and or not
+if then while break return
+
+ID
+
+NUMCONST
+
+CHARCONST
+
+STRINGCONST
+
+EMPTY
+
+======================================================================
+<assignop>      ::=     = | *= | /= | += | -=
+<relop>         ::=     < | > | == | != | >= | <= 
+<sumop>         ::=     + | -
+<mulop>         ::=     * | / | %
+<unaryop>       ::=     - | *
+
+======================================================================
+
+<program>       ::=     <declList>
+
+<declList>      ::=     <declList> <decl> | <decl>
+<decl>          ::=     <varDecl> | <funDecl>
+
+<typeSpec>      ::=     bool | char | int
+
+<varDecl>       ::=     <typeSpec> <varDeclList> ;
+<scopedVarDecl> ::=     <typeSpec> <varDeclList> ;
+<varDeclList>   ::=     <varDeclList> , <varDeclInit> | <varDeclInit>
+<varDeclInit>   ::=     <varDeclId> | <varDeclId> = <simpleExp>
+<varDeclId>     ::=     ID | ID [ NUMCONST ]
+
+<funDecl>       ::=     <typeSpec> ID ( <parms> ) <compoundStmt>
+<parms>         ::=     <parmList> | EMPTY
+<parmList>      ::=     <parmList> ; <parmTypeList> | <parmTypeList>
+<parmTypeList>  ::=     <typeSpec> <parmIdList>
+<parmIdList>    ::=     <parmIdList> , <parmId> | <parmId>
+<parmId>        ::=     ID | ID [ ]
+
+<stmtList>      ::=     <stmtList> <stmt> | EMPTY
+<stmt>          ::=     <expStmt> | <compoundStmt> | <selectStmt> | <iterStmt> | <returnStmt> | <breakStmt>
+<expStmt>       ::=     <exp> ; | ;
+<compoundStmt>  ::=     { <localDecls> <stmtList> }
+<localDecls>    ::=     <localDecls> <scopedVarDecl> | EMPTY
+<selectStmt>    ::=     if ( <simpleExp> ) <stmt> | if ( <simpleExp> ) <stmt> else <stmt>
+<iterStmt>      ::=     while ( <simpleExp> ) <stmt>
+<returnStmt>    ::=     return ; | return <exp> ;
+<breakStmt>     ::=     break ;
+
+<exp>           ::=     <mutable> = <exp> | <simpleExp>
+<simpleExp>     ::=     <simpleExp> or <andExp> | <andExp>
+<andExp>        ::=     <andExp> and <unaryRelExp> | <unaryRelExp>
+<unaryRelExp>   ::=     not <unaryRelExp> | <relExp>
+<relExp>        ::=     <sumExp> <relop> <sumExp> | <sumExp>
+<sumExp>        ::=     <sumExp> <sumop> <mulExp> | <mulExp>
+<mulExp>        ::=     <mulExp> <mulop> <unaryExp> | <unaryExp>
+<unaryExp>      ::=     <unaryop> <unaryExp> | <factor>
+<factor>        ::=     <mutable> | <immutable>
+<mutable>       ::=     ID | ID [ <exp> ]
+<immutable>     ::=     ( <exp> ) | <call> | <constant>
+<call>          ::=     ID ( <args> )
+<args>          ::=     <argList> | EMPTY
+<argList>       ::=     <argList> , <exp> | <exp>
+<constant>      ::=     NUMCONST | CHARCONST | STRINGCONST | true | false

@@ -1,0 +1,46 @@
+//==================
+// ir 用数子做编号的临时变量，编号必须连续
+// ir 的 br、jmp 是块的结束，不能随便加。 label 是块的开始，也不能随便加
+// 也就是，label 前面必须有个 br
+
+//==================
+
+L op R
+op
+
+//==================
+
+{  ->  env_push
+}  ->  env_pop
+
+//==================
+backpatch {xxx, xxx} yyy
+  nextList: 跳出当前块的代码所在行
+  trueList: 值为真时跳转所在的行
+  falseList:...
+//==================
+
+@ id member
+    =
+    push
+
+get_nxtcid              ; -> p2->tmpInt
+
+new_temp                ; -> p2->addr
+
+
+function_pack           ; -> curFunction
+function_push           ; -> glb_context
+
+env_push
+env_pop
+
+update_type
+
+alloc_vars  <name>      ; -> p2->...
+get_var     <name>
+
+gen         <res> <op> <a1> <a2> 
+gen_call
+
+backpatch   <list> <cid>

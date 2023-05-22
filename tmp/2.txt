@@ -1,0 +1,203 @@
+================= statements ==================
+                <_>   ::=   <funDecl>
+         <typeSpec>   ::=   bool
+         <typeSpec>   ::=   char
+         <typeSpec>   ::=   int
+          <funDecl>   ::=   <typeSpec> ID ( <parms> ) <compoundStmt>
+            <parms>   ::=   <parmList>
+            <parms>   ::=  
+         <parmList>   ::=   <parmList> ; <parmTypeList>
+         <parmList>   ::=   <parmTypeList>
+     <parmTypeList>   ::=   <typeSpec> <parmIdList>
+       <parmIdList>   ::=   <parmIdList> , <parmId>
+       <parmIdList>   ::=   <parmId>
+           <parmId>   ::=   ID
+           <parmId>   ::=   ID [ ]
+     <compoundStmt>   ::=   { }
+
+=================== FIRST =====================
+                <_>   ->    bool char int
+     <compoundStmt>   ->    {
+          <funDecl>   ->    bool char int
+           <parmId>   ->    ID
+       <parmIdList>   ->    ID
+         <parmList>   ->    bool char int
+     <parmTypeList>   ->    bool char int
+            <parms>   ->    EMPTY bool char int
+         <typeSpec>   ->    bool char int
+
+=================== FOLLOW ====================
+                <_>   ->    $
+     <compoundStmt>   ->   
+          <funDecl>   ->   
+           <parmId>   ->   
+       <parmIdList>   ->    ,
+         <parmList>   ->    ;
+     <parmTypeList>   ->   
+            <parms>   ->    )
+         <typeSpec>   ->    ID
+
+================== closures ===================
+[ 0 ]
+            <_>  ->  | <funDecl>
+     <typeSpec>  ->  | bool
+     <typeSpec>  ->  | char
+     <typeSpec>  ->  | int
+      <funDecl>  ->  | <typeSpec> ID ( <parms> ) <compoundStmt>
+[ 1 ]
+            <_>  ->  <funDecl> |
+[ 2 ]
+      <funDecl>  ->  <typeSpec> | ID ( <parms> ) <compoundStmt>
+[ 3 ]
+     <typeSpec>  ->  bool |
+[ 4 ]
+     <typeSpec>  ->  char |
+[ 5 ]
+     <typeSpec>  ->  int |
+[ 6 ]
+      <funDecl>  ->  <typeSpec> ID | ( <parms> ) <compoundStmt>
+[ 7 ]
+     <typeSpec>  ->  | bool
+     <typeSpec>  ->  | char
+     <typeSpec>  ->  | int
+      <funDecl>  ->  <typeSpec> ID ( | <parms> ) <compoundStmt>
+        <parms>  ->  | <parmList>
+        <parms>  ->  | EMPTY
+        <parms>  ->  EMPTY |
+     <parmList>  ->  | <parmList> ; <parmTypeList>
+     <parmList>  ->  | <parmTypeList>
+ <parmTypeList>  ->  | <typeSpec> <parmIdList>
+[ 8 ]
+        <parms>  ->  <parmList> |
+     <parmList>  ->  <parmList> | ; <parmTypeList>
+[ 9 ]
+     <parmList>  ->  <parmTypeList> |
+[ 10 ]
+      <funDecl>  ->  <typeSpec> ID ( <parms> | ) <compoundStmt>
+[ 11 ]
+ <parmTypeList>  ->  <typeSpec> | <parmIdList>
+   <parmIdList>  ->  | <parmIdList> , <parmId>
+   <parmIdList>  ->  | <parmId>
+       <parmId>  ->  | ID
+       <parmId>  ->  | ID [ ]
+[ 12 ]
+        <parms>  ->  EMPTY |
+[ 13 ]
+     <typeSpec>  ->  | bool
+     <typeSpec>  ->  | char
+     <typeSpec>  ->  | int
+     <parmList>  ->  <parmList> ; | <parmTypeList>
+ <parmTypeList>  ->  | <typeSpec> <parmIdList>
+[ 14 ]
+      <funDecl>  ->  <typeSpec> ID ( <parms> ) | <compoundStmt>
+ <compoundStmt>  ->  | { }
+[ 15 ]
+   <parmIdList>  ->  <parmId> |
+[ 16 ]
+ <parmTypeList>  ->  <typeSpec> <parmIdList> |
+   <parmIdList>  ->  <parmIdList> | , <parmId>
+[ 17 ]
+       <parmId>  ->  ID |
+       <parmId>  ->  ID | [ ]
+[ 18 ]
+     <parmList>  ->  <parmList> ; <parmTypeList> |
+[ 19 ]
+      <funDecl>  ->  <typeSpec> ID ( <parms> ) <compoundStmt> |
+[ 20 ]
+ <compoundStmt>  ->  { | }
+[ 21 ]
+   <parmIdList>  ->  <parmIdList> , | <parmId>
+       <parmId>  ->  | ID
+       <parmId>  ->  | ID [ ]
+[ 22 ]
+       <parmId>  ->  ID [ | ]
+[ 23 ]
+ <compoundStmt>  ->  { } |
+[ 24 ]
+   <parmIdList>  ->  <parmIdList> , <parmId> |
+[ 25 ]
+       <parmId>  ->  ID [ ] |
+
+================== table ======================
+[ 0 ]             bool      s 3
+[ 0 ]             char      s 4
+[ 0 ]              int      s 5
+[ 0 ]        <funDecl>      goto 1
+[ 0 ]       <typeSpec>      goto 2
+
+[ 1 ]                $      acc
+
+[ 2 ]               ID      s 6
+
+[ 3 ]               ID      r      <typeSpec>  ->  | bool
+
+[ 4 ]               ID      r      <typeSpec>  ->  | char
+
+[ 5 ]               ID      r      <typeSpec>  ->  | int
+
+[ 6 ]                (      s 7
+
+[ 7 ]                )      r         <parms>  ->  | EMPTY
+[ 7 ]             bool      s 3
+[ 7 ]             char      s 4
+[ 7 ]              int      s 5
+[ 7 ]       <parmList>      goto 8
+[ 7 ]   <parmTypeList>      goto 9
+[ 7 ]          <parms>      goto 10
+[ 7 ]       <typeSpec>      goto 11
+
+[ 8 ]                )      r         <parms>  ->  | <parmList>
+[ 8 ]                ;      s 13
+
+[ 9 ]                ;      r      <parmList>  ->  | <parmTypeList>
+
+[ 10 ]                )      s 14
+
+[ 11 ]               ID      s 17
+[ 11 ]         <parmId>      goto 15
+[ 11 ]     <parmIdList>      goto 16
+
+[ 12 ]                )      r         <parms>  ->  | EMPTY
+
+[ 13 ]             bool      s 3
+[ 13 ]             char      s 4
+[ 13 ]              int      s 5
+[ 13 ]   <parmTypeList>      goto 18
+[ 13 ]       <typeSpec>      goto 11
+
+[ 14 ]                {      s 20
+[ 14 ]   <compoundStmt>      goto 19
+
+[ 15 ]                ,      r    <parmIdList>  ->  | <parmId>
+
+[ 16 ]                ,      s 21
+
+[ 17 ]                [      s 22
+
+[ 18 ]                ;      r      <parmList>  ->  | <parmList> ; <parmTypeList>
+
+[ 20 ]                }      s 23
+
+[ 21 ]               ID      s 17
+[ 21 ]         <parmId>      goto 24
+
+[ 22 ]                ]      s 25
+
+[ 24 ]                ,      r    <parmIdList>  ->  | <parmIdList> , <parmId>
+
+0 5 	int 
+
+0 2 	<typeSpec> 
+
+0 2 6 	<typeSpec> ID 
+
+0 2 6 7 	<typeSpec> ID ( 
+
+0 2 6 7 10 	<typeSpec> ID ( <parms> 
+
+0 2 6 7 10 14 	<typeSpec> ID ( <parms> ) 
+
+0 2 6 7 10 14 20 	<typeSpec> ID ( <parms> ) { 
+
+0 2 6 7 10 14 20 23 	<typeSpec> ID ( <parms> ) { } 
+
